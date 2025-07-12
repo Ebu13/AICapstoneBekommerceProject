@@ -1,9 +1,0 @@
-flask
-flask-cors
-psycopg2-binary
-sentence-transformers>=2.2.2
-scikit-learn
-transformers>=4.27.0
-torch
-Pillow
-requests
