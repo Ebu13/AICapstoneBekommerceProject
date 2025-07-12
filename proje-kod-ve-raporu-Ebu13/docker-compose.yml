@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    build: ./db
+    container_name: bekommerce-db
+    restart: always
+    environment:
+      POSTGRES_DB: bekommerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 13042003
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bekommerce
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 13042003
+    ports:
+      - "8081:8081"
+
+  frontend:
+    build: ./client
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+  chatbot:
+    build: ./bekommerce_bot
+    container_name: bekommerce-chatbot
+    depends_on:
+      - db
+    environment:
+      POSTGRES_DB: bekommerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 13042003
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    ports:
+      - "5000:5000"
+    command: ["python", "app.py"]
+
+volumes:
+  pgdata:
